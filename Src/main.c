@@ -41,7 +41,6 @@
 
 /* USER CODE BEGIN Includes */
 #include "hcms2915.h"
-#include "system.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -138,7 +137,9 @@ int main(void)
 		   HCMS_PutStr(str);
 		}
   /* USER CODE END WHILE */
-		System_Process();
+		//timeSleep++;
+		//if(timeSleep==100000) ;
+			  //HCMS_On(1);
   /* USER CODE BEGIN 3 */
 
   }
