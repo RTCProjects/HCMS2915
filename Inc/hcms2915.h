@@ -94,4 +94,6 @@ void HCMS_Disable(void);
 
 void HCMS_PutStr(char *);
 void HCMS_Update(void);
+
+void HCMS_On(uint8_t On);
 #endif

@@ -121,3 +121,9 @@ void HCMS_Update()
     
 	HCMS_RawPixels(((uint8_t*)&hcms_screen),SCR_SIZE);
 }
+
+void HCMS_On(uint8_t On)
+{
+	  def_ctrl_r0.sleep_mode = !On;
+		HCMS_Ctrl_Register(def_ctrl_r0.byte);
+}

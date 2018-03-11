@@ -64,7 +64,7 @@ static void MX_TIM6_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-
+ uint32_t timeSleep = 0;
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -87,9 +87,9 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
+  
   /* USER CODE BEGIN Init */
-
+  timeSleep = 0;
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -106,6 +106,7 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
    HCMS_Init();
+	 HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);   
 	   //HCMS_PutStr("H");
 	   //HCMS_RawPixels(0,40);
   /* USER CODE END 2 */
@@ -127,13 +128,18 @@ int main(void)
 			HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 			sprintf(outBuf, "%02d:%02d:%02d", sTime.Hours,sTime.Minutes,sTime.Seconds);
 			HCMS_PutStr(outBuf);
+			
+			/*if(sTime.Seconds % 2)HCMS_On(1);
+			else HCMS_On(0);  */
 		}
 		else
 		{
 		   HCMS_PutStr(str);
 		}
   /* USER CODE END WHILE */
-
+		//timeSleep++;
+		//if(timeSleep==100000) ;
+			  //HCMS_On(1);
   /* USER CODE BEGIN 3 */
 
   }
