@@ -106,6 +106,8 @@ int main(void)
   MX_RTC_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+	System_Init();
+	
    HCMS_Init();
 	 HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);   
 	   //HCMS_PutStr("H");
