@@ -109,7 +109,7 @@ int main(void)
 	System_Init();
 	
    HCMS_Init();
-	 HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);   
+	 HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN2);   
 	   //HCMS_PutStr("H");
 	   //HCMS_RawPixels(0,40);
   /* USER CODE END 2 */
@@ -140,6 +140,7 @@ int main(void)
 		   HCMS_PutStr(str);
 		}
   /* USER CODE END WHILE */
+		
 		System_Process();
   /* USER CODE BEGIN 3 */
 

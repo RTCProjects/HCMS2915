@@ -3,6 +3,8 @@
 
 #include "stm32f4xx_hal.h"
 
+#define SLEEP_VALUE 100000
+
 typedef enum
 {
 	SYS_TIME			 = 0x01,
