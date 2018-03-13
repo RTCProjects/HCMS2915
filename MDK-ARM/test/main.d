@@ -36,3 +36,5 @@ test\main.o: ../Inc/hcms2915.h
 test\main.o: ../Inc/font5x7.h
 test\main.o: C:\Keil_v521A\ARM\ARMCC\Bin\..\include\string.h
 test\main.o: ../Inc/system.h
+test\main.o: ../Inc/graphic.h
+test\main.o: ../Inc/settings.h
