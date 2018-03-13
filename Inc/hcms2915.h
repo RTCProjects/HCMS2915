@@ -48,6 +48,23 @@ typedef enum{				// real peak current
 	PEAK_13_MA		= 3		// 12.8 mA
 } peak_current_t;
 
+typedef enum{
+	EFFECT_OFF,
+	BLINK_R1,
+	BLINK_R2,
+	BLINK_R3
+}eEffectType;
+
+typedef union{
+	struct{
+		uint8_t	r1_blink : 1;
+		uint8_t	r2_blink : 1;
+		uint8_t	r3_blink : 1;
+		
+		uint8_t	reserved : 5;
+	};
+	uint8_t	mode_byte;
+}tEffectMode;
 
 typedef	union{
 	struct{
@@ -58,7 +75,6 @@ typedef	union{
 	};
 	uint8_t		byte;					
 } ctrl_reg0_t;
-
 
 typedef	union{
 	struct{
@@ -80,9 +96,9 @@ extern char hcms_screen[SCR_SIZE];
 extern SPI_HandleTypeDef hspi1;
 
 
-void	HCMS_Init(void);
-void	HCMS_Reset(void);
-void 	HCMS_Ctrl_Register(uint8_t data);
+void HCMS_Init(void);
+void HCMS_Reset(void);
+void HCMS_Ctrl_Register(uint8_t data);
 void HCMS_RawPixels(uint8_t *buf, int sz);
 
 void HCMS_CtrlMode(void);
@@ -92,8 +108,12 @@ void HCMS_Put_Byte(uint8_t	outByte);
 void HCMS_Enable(void);
 void HCMS_Disable(void);
 
+void HCMS_SetBrightness(pwm_brightness_t	brightness);
+
 void HCMS_PutStr(char *);
 void HCMS_Update(void);
 void HCMS_Clear(void);
 void HCMS_On(uint8_t On);
+
+void HCMS_Effect(eEffectType eEffect);
 #endif

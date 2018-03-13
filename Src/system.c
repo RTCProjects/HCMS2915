@@ -1,5 +1,7 @@
 #include "system.h"
 #include "graphic.h"
+#include "settings.h"
+#include "hcms2915.h"
 
 RTC_HandleTypeDef hrtc;
 
@@ -9,6 +11,7 @@ static RTC_TimeTypeDef	rtcTime;
 static RTC_DateTypeDef	rtcDate;
 
 uint8_t		btnPressCnt;
+uint8_t		btnPressState;
 uint32_t	sleepCounter;
 
 void	System_GetDateTimeFromRTC(void);
@@ -29,10 +32,11 @@ void System_Init()
   }
 	
 	eCurrentSysState = SYS_TIME;
-	eCurrentSettingsState = SET_DEFAULT;
+	eCurrentSettingsState = SELECT_DEFAULT;
 	
 	sleepCounter = 0;
 	btnPressCnt = 0;
+	btnPressState = 0;
 }
 
 void System_Process()
@@ -41,34 +45,193 @@ void System_Process()
 	
 	if(pinState == GPIO_PIN_RESET)//нажата кнопка
 	{
+
+			switch(eCurrentSysState)
+			{
+				case SYS_TIME:
+				{
+					if(btnPressCnt > HI_PRESS_TIME){
+						System_SetState(SYS_SETTINGS);
+						System_SetSettingsState(SELECT_BRIGHT);
+						btnPressCnt = 0;
+					}					
+				}break;
+				
+				case SYS_DATE:
+				{
+					
+				}break;
+				
+				case SYS_SETTINGS:
+				{			
+					switch(eCurrentSettingsState)
+					{
+						case SELECT_TIME:
+						{
+							if(btnPressCnt > HI_PRESS_TIME){
+								HCMS_Effect(BLINK_R1);
+								btnPressCnt = 0;
+								System_SetState(SYS_SET_HOUR);	
+							}		
+						}break;
+						
+						case SELECT_DATE:
+						{
+							if(btnPressCnt > HI_PRESS_TIME){
+								HCMS_Effect(BLINK_R1);
+								btnPressCnt = 0;
+								System_SetState(SYS_SET_DAY);	
+							}	
+						}break;
+						
+						case SELECT_EXIT:
+						{
+							if(btnPressCnt > HI_PRESS_TIME){
+								btnPressCnt = 0;
+								System_SetState(SYS_TIME);	
+							}	
+						}break;
+					}
+				}break;
+				
+				case SYS_SET_HOUR:
+				{
+					if(btnPressCnt > HI_PRESS_TIME){
+						HCMS_Effect(BLINK_R2);
+						
+						System_SetState(SYS_SET_MIN);	
+						btnPressCnt = 0;
+					}			
+				}break;
+				
+				case SYS_SET_MIN:
+				{
+					if(btnPressCnt > HI_PRESS_TIME){
+						HCMS_Effect(BLINK_R3);
+						
+						System_SetState(SYS_SET_SEC);	
+						btnPressCnt = 0;
+					}			
+				}break;
+				
+				case SYS_SET_SEC:
+				{
+					if(btnPressCnt > HI_PRESS_TIME){
+						HCMS_Effect(EFFECT_OFF);
+						
+						System_SetState(SYS_TIME);
+						btnPressCnt = 0;
+					}			
+				}break;
+				
+				case SYS_SET_DAY:
+				{
+					if(btnPressCnt > HI_PRESS_TIME){
+						HCMS_Effect(BLINK_R2);
+						
+						System_SetState(SYS_SET_MONTH);
+						btnPressCnt = 0;
+					}			
+				}break;
+				
+				case SYS_SET_MONTH:
+				{
+					if(btnPressCnt > HI_PRESS_TIME){
+						HCMS_Effect(BLINK_R3);
+						
+						System_SetState(SYS_SET_YEAR);
+						btnPressCnt = 0;
+					}			
+				}break;
+				
+				case SYS_SET_YEAR:
+				{
+					if(btnPressCnt > HI_PRESS_TIME){
+						HCMS_Effect(EFFECT_OFF);
+						
+						System_SetState(SYS_TIME);
+						btnPressCnt = 0;
+					}			
+				}break;
+			}			
+		btnPressCnt++;	
+
+		
+	}
+	else
+	{
 		switch(eCurrentSysState)
 		{
-			case SYS_TIME:
-			{
-				if(btnPressCnt > 100)
-					System_SetState(SYS_SETTINGS);					
-			}break;
-			
-			case SYS_DATE:
-			{
-				
-			}break;
-			
 			case SYS_SETTINGS:
 			{
-				Graphic_ResetSettingsScroll();
+				if(btnPressCnt > LO_PRESS_TIME & btnPressCnt < HI_PRESS_TIME){
+						eCurrentSettingsState++;
+						if(eCurrentSettingsState > LAST_SETTING)eCurrentSettingsState = FIRST_SETTING;
+					}	
+			}break;
+			
+			case SYS_SET_HOUR:
+			{
+				if(btnPressCnt > LO_PRESS_TIME & btnPressCnt < HI_PRESS_TIME){
+					rtcTime.Hours++;
+					if(rtcTime.Hours>23)rtcTime.Hours = 0;
+					HAL_RTC_SetTime(&hrtc,&rtcTime,RTC_FORMAT_BIN);
+				}
+			}break;
+			
+			case SYS_SET_MIN:
+			{
+				if(btnPressCnt > LO_PRESS_TIME & btnPressCnt < HI_PRESS_TIME){
+					rtcTime.Minutes++;
+					if(rtcTime.Minutes>59)rtcTime.Minutes = 0;
+					HAL_RTC_SetTime(&hrtc,&rtcTime,RTC_FORMAT_BIN);
+				}
+			}break;
+			
+			case SYS_SET_SEC:
+			{
+				if(btnPressCnt > LO_PRESS_TIME & btnPressCnt < HI_PRESS_TIME){
+					rtcTime.Seconds++;
+					if(rtcTime.Hours>59)rtcTime.Seconds = 0;
+					HAL_RTC_SetTime(&hrtc,&rtcTime,RTC_FORMAT_BIN);
+				}
+			}break;
+			
+			case SYS_SET_DAY:
+			{
+				if(btnPressCnt > LO_PRESS_TIME & btnPressCnt < HI_PRESS_TIME){
+					rtcDate.Date++;
+					if(rtcDate.Date>31)rtcDate.Date = 1;
+					HAL_RTC_SetDate(&hrtc,&rtcDate,RTC_FORMAT_BIN);
+				}
+			}break;
+			
+			case SYS_SET_MONTH:
+			{
+				if(btnPressCnt > LO_PRESS_TIME & btnPressCnt < HI_PRESS_TIME){
+					rtcDate.Month++;
+					if(rtcDate.Month>12)rtcDate.Month = 1;
+					HAL_RTC_SetDate(&hrtc,&rtcDate,RTC_FORMAT_BIN);
+				}
+			}break;
+			
+			case SYS_SET_YEAR:
+			{
+				if(btnPressCnt > LO_PRESS_TIME & btnPressCnt < HI_PRESS_TIME){
+					rtcDate.Year++;
+					if(rtcDate.Year>99)rtcDate.Year = 0;
+					HAL_RTC_SetDate(&hrtc,&rtcDate,RTC_FORMAT_BIN);
+				}
 			}break;
 		}
 		
-
-			
-		
-		btnPressCnt++;
+		btnPressCnt = 0;
+		btnPressState = 0;
 	}
+		
 
 	
-	  sleepCounter++;
-	
+	  //sleepCounter++;
 		//if(sleepCounter > SLEEP_VALUE)
 			//HAL_PWR_EnterSTANDBYMode();
 			//HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
@@ -80,18 +243,18 @@ void	System_GetDateTimeFromRTC()
 	HAL_RTC_GetDate(&hrtc,&rtcDate, RTC_FORMAT_BIN);
 }
 
-RTC_TimeTypeDef System_GetRTCTime()
+RTC_TimeTypeDef *System_GetRTCTime()
 {
 	System_GetDateTimeFromRTC();
 	
-	return rtcTime;
+	return &rtcTime;
 }
 
-RTC_DateTypeDef System_GetRTCDate()
+RTC_DateTypeDef *System_GetRTCDate()
 {
 	System_GetDateTimeFromRTC();
 	
-	return rtcDate;	
+	return &rtcDate;	
 }
 
 void System_SetState(eSystemState State)

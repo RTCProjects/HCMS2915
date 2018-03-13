@@ -430,6 +430,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\graphic.c</FilePath>
             </File>
+            <File>
+              <FileName>settings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\settings.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

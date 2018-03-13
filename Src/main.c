@@ -43,6 +43,7 @@
 #include "hcms2915.h"
 #include "system.h"
 #include "graphic.h"
+#include "settings.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -106,6 +107,7 @@ int main(void)
   /* Initialize all configured peripherals */
 	System_Init();
 	Graphic_Init();
+	Settings_Init();
 	
   MX_GPIO_Init();
   MX_SPI1_Init();
