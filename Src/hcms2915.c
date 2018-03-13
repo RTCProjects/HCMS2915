@@ -72,7 +72,7 @@ void HCMS_Put_Byte(uint8_t	outByte)
 void HCMS_RawPixels(uint8_t *buf, int sz)
 {
 	
-	scroll_x++;
+	//scroll_x++;
 	if(scroll_x > 7)scroll_x = -7;
 	
 	HCMS_DataMode();
@@ -91,10 +91,15 @@ void HCMS_RawPixels(uint8_t *buf, int sz)
 	HCMS_Disable();
 }
 
-
+void HCMS_Clear()
+{
+	memset(hcms_screen,0,sizeof(uint8_t) * SCR_SIZE);
+	
+}
 
 void HCMS_PutStr(char *str)
 {
+
 	//HCMS_DataMode();
 	//HCMS_Enable();
 	 uint16_t ind = 0;
@@ -118,7 +123,6 @@ void HCMS_PutStr(char *str)
 
 void HCMS_Update()
 {
-    
 	HCMS_RawPixels(((uint8_t*)&hcms_screen),SCR_SIZE);
 }
 
