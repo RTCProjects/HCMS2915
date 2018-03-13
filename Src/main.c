@@ -139,6 +139,10 @@ int main(void)
 			HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 			sprintf(outBuf, "%02d:%02d:%02d", sTime.Hours,sTime.Minutes,sTime.Seconds);
 			HCMS_PutStr(outBuf);
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 		}
 		else
 		{
