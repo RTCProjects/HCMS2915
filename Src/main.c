@@ -42,14 +42,17 @@
 /* USER CODE BEGIN Includes */
 #include "hcms2915.h"
 #include "system.h"
+#include "graphic.h"
+#include "settings.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-RTC_HandleTypeDef hrtc;
+
 
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -60,8 +63,9 @@ extern char hcms_screen[SCR_SIZE];
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
-static void MX_RTC_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_TIM7_Init(void);
+
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -101,15 +105,19 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+	System_Init();
+	Graphic_Init();
+	Settings_Init();
+	
   MX_GPIO_Init();
   MX_SPI1_Init();
-  MX_RTC_Init();
   MX_TIM6_Init();
+	MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
-	System_Init();
+	
 	
    HCMS_Init();
-	 HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);   
+	 HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN2);   
 	   //HCMS_PutStr("H");
 	   //HCMS_RawPixels(0,40);
   /* USER CODE END 2 */
@@ -120,8 +128,8 @@ int main(void)
 	
   while (1)
   {
-		
-		
+		Graphic_Process();
+		/*
 		GPIO_PinState pinState = HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_13);
 		
 		if(pinState == GPIO_PIN_SET){
@@ -131,19 +139,17 @@ int main(void)
 			HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 			sprintf(outBuf, "%02d:%02d:%02d", sTime.Hours,sTime.Minutes,sTime.Seconds);
 			HCMS_PutStr(outBuf);
+<<<<<<< HEAD
+=======
 
+>>>>>>> master
 		}
 		else
 		{
 		   HCMS_PutStr(str);
-		}
-  /* USER CODE END WHILE */
-		System_Process();
-  /* USER CODE BEGIN 3 */
-
+		}*/
+		HAL_Delay(10);
   }
-  /* USER CODE END 3 */
-
 }
 
 /**
@@ -222,26 +228,6 @@ void SystemClock_Config(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-/* RTC init function */
-static void MX_RTC_Init(void)
-{
-
-    /**Initialize RTC Only 
-    */
-  hrtc.Instance = RTC;
-  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
-  hrtc.Init.AsynchPrediv = 127;
-  hrtc.Init.SynchPrediv = 255;
-  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
-  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
-  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
-  if (HAL_RTC_Init(&hrtc) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-}
-
 /* SPI1 init function */
 static void MX_SPI1_Init(void)
 {
@@ -293,6 +279,31 @@ static void MX_TIM6_Init(void)
 
 }
 
+static void MX_TIM7_Init(void)
+{
+	  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 1999;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 299;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+	
+	HAL_TIM_Base_Start(&htim7);
+	HAL_TIM_Base_Start_IT(&htim7);
+}
+
+
 /** Configure pins as 
         * Analog 
         * Input 
@@ -336,7 +347,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if(htim->Instance == TIM6)
 	{
 		HCMS_Update();
-		
+	}
+	if(htim->Instance == TIM7)
+	{
+		System_Process();
 	}
 }
 /* USER CODE END 4 */

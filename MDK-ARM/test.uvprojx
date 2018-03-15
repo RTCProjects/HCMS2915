@@ -401,14 +401,19 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
-              <FileName>stm32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/stm32f4xx_it.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/main.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\system.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/stm32f4xx_it.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_msp.c</FileName>
@@ -421,9 +426,14 @@
               <FilePath>..\Src\hcms2915.c</FilePath>
             </File>
             <File>
-              <FileName>system.c</FileName>
+              <FileName>graphic.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\system.c</FilePath>
+              <FilePath>..\Src\graphic.c</FilePath>
+            </File>
+            <File>
+              <FileName>settings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\settings.c</FilePath>
             </File>
           </Files>
         </Group>
