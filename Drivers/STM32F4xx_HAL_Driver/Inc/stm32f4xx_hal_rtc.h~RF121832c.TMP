@@ -114,6 +114,7 @@ typedef struct
   uint32_t SubSeconds;     /*!< Specifies the RTC_SSR RTC Sub Second register content.
                                  This parameter corresponds to a time unit range between [0-1] Second
                                  with [1 Sec / SecondFraction +1] granularity */
+
   uint32_t SecondFraction;  /*!< Specifies the range or granularity of Sub Second register content
                                  corresponding to Synchronous pre-scaler factor value (PREDIV_S)
                                  This parameter corresponds to a time unit range between [0-1] Second
